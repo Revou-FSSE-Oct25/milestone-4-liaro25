@@ -6,12 +6,17 @@ datasource db {
   provider = "postgresql"
 }
 
+enum Role {
+  ADMIN
+  CUSTOMER
+}
+
 model User {
   id        String    @id @default(uuid())
   name      String
   email     String    @unique
   password  String
-  role      String    @default("user")
+  role      Role      @default(CUSTOMER)
   accounts  Account[]
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -28,11 +33,17 @@ model Account {
   updatedAt     DateTime      @updatedAt
 }
 
+enum TransactionType {
+  DEPOSIT
+  WITHDRAW
+  TRANSFER
+}
+
 model Transaction {
   id        String   @id @default(uuid())
   accountId String
   account   Account  @relation(fields: [accountId], references: [id])
   amount    Float
-  type      String
+  type      TransactionType
   createdAt DateTime @default(now())
 }
