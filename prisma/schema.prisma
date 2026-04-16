@@ -33,17 +33,6 @@ model Account {
   updatedAt     DateTime      @updatedAt
 }
 
-enum TransactionType {
-  DEPOSIT
-  WITHDRAW
-  TRANSFER
-}
 
-model Transaction {
-  id        String   @id @default(uuid())
-  accountId String
-  account   Account  @relation(fields: [accountId], references: [id])
-  amount    Float
-  type      TransactionType
-  createdAt DateTime @default(now())
+
 }
