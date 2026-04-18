@@ -6,7 +6,7 @@ A production-ready backend API simulating a **digital banking system**, built wi
 
 ## 🔗 Live API
 
-https://milestone4-liaro-api.up.railway.app
+https://milestone4-liaro-api.up.railway.app/api
 
 ## 📄 Documentation (Full Development Notes)
 
