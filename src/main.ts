@@ -16,18 +16,11 @@ async function bootstrap() {
   );
 
   const config = new DocumentBuilder()
-    .setTitle('RevoBank API')
-    .setDescription('Backend API documentation for Milestone 4')
-    .setVersion('1.0')
-    .addBearerAuth(
-      {
-        type: 'http',
-        scheme: 'bearer',
-        bearerFormat: 'JWT',
-      },
-      'access-token',
-    )
-    .build();
+  .setTitle('RevoBank API')
+  .setDescription('Backend API documentation for Milestone 4')
+  .setVersion('1.0')
+  .addBearerAuth()
+  .build();
 
   const document = SwaggerModule.createDocument(app, config);
 
