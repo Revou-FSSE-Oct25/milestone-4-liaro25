@@ -1,8 +1,9 @@
-import { IsNotEmpty, IsString, Length } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
+import { IsString, Length } from 'class-validator';
 
 export class CreateAccountDto {
+  @ApiProperty({ example: '12345678' })
   @IsString()
-  @IsNotEmpty()
-  @Length(8, 20)
+  @Length(8, 8)
   accountNumber!: string;
 }

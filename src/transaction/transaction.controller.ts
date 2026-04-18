@@ -7,12 +7,15 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { TransactionService } from './transaction.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { DepositDto } from './dto/deposit.dto';
 import { WithdrawDto } from './dto/withdraw.dto';
 import { TransferDto } from './dto/transfer.dto';
 
+@ApiTags('Transaction')
+@ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
 @Controller('transactions')
 export class TransactionController {

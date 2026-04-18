@@ -1,19 +1,11 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Patch,
-  Post,
-  Req,
-  UseGuards,
-} from '@nestjs/common';
-import { AccountService } from './account.service';
+import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { AccountService } from './account.service';
 import { CreateAccountDto } from './dto/create-account.dto';
-import { UpdateAccountDto } from './dto/update-account.dto';
 
+@ApiTags('Account')
+@ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
 @Controller('accounts')
 export class AccountController {
@@ -27,24 +19,5 @@ export class AccountController {
   @Get()
   findAll(@Req() req: any) {
     return this.accountService.findAll(req.user.userId);
-  }
-
-  @Get(':id')
-  findOne(@Req() req: any, @Param('id') id: string) {
-    return this.accountService.findOne(req.user.userId, id);
-  }
-
-  @Patch(':id')
-  update(
-    @Req() req: any,
-    @Param('id') id: string,
-    @Body() updateAccountDto: UpdateAccountDto,
-  ) {
-    return this.accountService.update(req.user.userId, id, updateAccountDto);
-  }
-
-  @Delete(':id')
-  remove(@Req() req: any, @Param('id') id: string) {
-    return this.accountService.remove(req.user.userId, id);
   }
 }

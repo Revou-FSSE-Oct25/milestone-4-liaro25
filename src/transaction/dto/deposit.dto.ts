@@ -1,11 +1,13 @@
-import { IsNotEmpty, IsNumber, IsPositive, IsString } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
+import { IsUUID, IsNumber, Min } from 'class-validator';
 
 export class DepositDto {
-  @IsString()
-  @IsNotEmpty()
+  @ApiProperty({ example: 'account-uuid' })
+  @IsUUID()
   accountId!: string;
 
+  @ApiProperty({ example: 1000 })
   @IsNumber()
-  @IsPositive()
+  @Min(1)
   amount!: number;
 }

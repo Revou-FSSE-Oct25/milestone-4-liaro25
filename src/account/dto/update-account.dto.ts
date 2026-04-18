@@ -1,4 +1,10 @@
-import { PartialType } from '@nestjs/mapped-types';
-import { CreateAccountDto } from './create-account.dto';
+import { ApiPropertyOptional } from '@nestjs/swagger';
+import { IsOptional, IsString, Length } from 'class-validator';
 
-export class UpdateAccountDto extends PartialType(CreateAccountDto) {}
+export class UpdateAccountDto {
+  @ApiPropertyOptional({ example: '87654321' })
+  @IsOptional()
+  @IsString()
+  @Length(8, 8)
+  accountNumber?: string;
+}
