@@ -19,10 +19,20 @@ async function bootstrap() {
     .setTitle('RevoBank API')
     .setDescription('Backend API documentation for Milestone 4')
     .setVersion('1.0')
-    .addBearerAuth()
+    .addBearerAuth(
+      {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+      },
+      'access-token',
+    )
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
+
+  document.security = [{ 'access-token': [] }];
+
   SwaggerModule.setup('api', app, document);
 
   await app.listen(process.env.PORT ?? 3000);
