@@ -4,11 +4,14 @@ A production-ready backend API simulating a **digital banking system**, built wi
 
 ---
 
-## 🔗 Live API
+## 🚀 Live API (Swagger)
 
 https://milestone4-liaro-api.up.railway.app/api
 
-## 📄 Documentation (Full Development Notes)
+Interactive API documentation powered by Swagger.
+You can test all endpoints directly from this interface, including authenticated routes using Bearer Token.
+
+## 📄 Documentation (Notion)
 
 https://noto.li/LP1nZ5
 
@@ -62,6 +65,11 @@ src/
 - Password hashing using bcrypt
 - JWT-based authorization
 
+### User Profile
+
+- Get authenticated user profile
+- Update user profile (name and optional email)
+
 ### Account System
 
 - Create and manage multiple accounts
@@ -74,12 +82,15 @@ src/
 - Withdraw
 - Transfer between accounts
 - Transaction history tracking
+- Atomic balance updates using Prisma transactions to ensure data consistency
 
 ### Security
 
-- Role-based access control
-- Data validation using DTO and class-validator
-- Protected routes using Guards
+- JWT-based authentication (no fallback secret in production)
+- Protected routes using JwtAuthGuard
+- Users can only access their own accounts and transactions
+- Sensitive data (e.g. password) is never exposed in API responses
+- Input validation using DTO and class-validator
 
 ---
 
@@ -92,7 +103,8 @@ src/
 
 ### User
 
-- `GET /users/me`
+- `GET /user/profile`
+- `PATCH /user/profile`
 
 ### Account
 
@@ -107,6 +119,8 @@ src/
 - `POST /transactions/deposit`
 - `POST /transactions/withdraw`
 - `POST /transactions/transfer`
+- `GET /transactions`
+- `GET /transactions/:id`
 
 ---
 
