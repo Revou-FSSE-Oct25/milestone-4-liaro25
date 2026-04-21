@@ -30,6 +30,7 @@ export class TransactionService {
     return account;
   }
 
+  // DEPOSIT and WITHDRAW are now atomic with balance checks inside the transaction
   async deposit(userId: string, depositDto: DepositDto) {
     const { accountId, amount } = depositDto;
 
@@ -61,16 +62,27 @@ export class TransactionService {
     });
   }
 
+  // FIXED withdraw with balance check inside transaction
   async withdraw(userId: string, withdrawDto: WithdrawDto) {
     const { accountId, amount } = withdrawDto;
 
-    const account = await this.getOwnedAccount(userId, accountId);
-
-    if (account.balance < amount) {
-      throw new BadRequestException('Insufficient balance');
-    }
-
     return this.prisma.$transaction(async (tx: Prisma.TransactionClient) => {
+      const account = await tx.account.findUnique({
+        where: { id: accountId },
+      });
+
+      if (!account) {
+        throw new NotFoundException('Account not found');
+      }
+
+      if (account.userId !== userId) {
+        throw new ForbiddenException('You are not allowed to access this account');
+      }
+
+      if (account.balance < amount) {
+        throw new BadRequestException('Insufficient balance');
+      }
+
       const updatedAccount = await tx.account.update({
         where: { id: accountId },
         data: {
@@ -96,6 +108,7 @@ export class TransactionService {
     });
   }
 
+  // FIXED transfer with balance check and atomicity
   async transfer(userId: string, transferDto: TransferDto) {
     const { fromAccountId, toAccountId, amount } = transferDto;
 
@@ -103,21 +116,31 @@ export class TransactionService {
       throw new BadRequestException('Cannot transfer to the same account');
     }
 
-    const fromAccount = await this.getOwnedAccount(userId, fromAccountId);
-
-    const toAccount = await this.prisma.account.findUnique({
-      where: { id: toAccountId },
-    });
-
-    if (!toAccount) {
-      throw new NotFoundException('Destination account not found');
-    }
-
-    if (fromAccount.balance < amount) {
-      throw new BadRequestException('Insufficient balance');
-    }
-
     return this.prisma.$transaction(async (tx: Prisma.TransactionClient) => {
+      const fromAccount = await tx.account.findUnique({
+        where: { id: fromAccountId },
+      });
+
+      if (!fromAccount) {
+        throw new NotFoundException('Source account not found');
+      }
+
+      if (fromAccount.userId !== userId) {
+        throw new ForbiddenException('You are not allowed to access this account');
+      }
+
+      const toAccount = await tx.account.findUnique({
+        where: { id: toAccountId },
+      });
+
+      if (!toAccount) {
+        throw new NotFoundException('Destination account not found');
+      }
+
+      if (fromAccount.balance < amount) {
+        throw new BadRequestException('Insufficient balance');
+      }
+
       const updatedFrom = await tx.account.update({
         where: { id: fromAccountId },
         data: {
