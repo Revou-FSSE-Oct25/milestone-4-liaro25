@@ -1,22 +1,20 @@
-import { Controller, Get, Req, UseGuards } from '@nestjs/common';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { Body, Controller, Get, Patch, Req, UseGuards } from '@nestjs/common';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { UpdateProfileDto } from './dto/update-profile.dto';
 import { UserService } from './user.service';
 
-@ApiTags('User')
-@ApiBearerAuth()
-@UseGuards(JwtAuthGuard)
 @Controller('user')
+@UseGuards(JwtAuthGuard) // apply guard once (cleaner)
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Get('profile')
-  async getProfile(@Req() req: any) {
-    const user = await this.userService.getProfile(req.user.userId);
+  getProfile(@Req() req) {
+    return this.userService.getProfile(req.user.userId);
+  }
 
-    return {
-      message: 'Profile fetched successfully',
-      user,
-    };
+  @Patch('profile')
+  updateProfile(@Req() req, @Body() updateProfileDto: UpdateProfileDto) {
+    return this.userService.updateProfile(req.user.userId, updateProfileDto);
   }
 }
