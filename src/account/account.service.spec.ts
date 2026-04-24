@@ -1,14 +1,27 @@
-/// <reference types="jest" />
-
 import { Test, TestingModule } from '@nestjs/testing';
 import { AccountService } from './account.service';
+import { PrismaService } from '../prisma/prisma.service';
 
 describe('AccountService', () => {
   let service: AccountService;
 
+  const mockPrismaService = {
+    account: {
+      create: jest.fn(),
+      findMany: jest.fn(),
+      findFirst: jest.fn(),
+    },
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [AccountService],
+      providers: [
+        AccountService,
+        {
+          provide: PrismaService,
+          useValue: mockPrismaService,
+        },
+      ],
     }).compile();
 
     service = module.get<AccountService>(AccountService);
