@@ -36,4 +36,15 @@ describe('TransactionService', () => {
   it('should be defined', () => {
     expect(service).toBeDefined();
   });
+
+  it('should process withdraw transaction', async () => {
+  // Arrange
+  mockPrismaService.$transaction.mockResolvedValue(undefined);
+
+  // Act
+  await service.withdraw('1', { amount: 200 } as any);
+
+  // Assert
+  expect(mockPrismaService.$transaction).toHaveBeenCalled();
+});
 });
