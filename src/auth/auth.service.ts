@@ -22,9 +22,10 @@ export class AuthService {
 
   async register(registerDto: RegisterDto) {
     const { name, email, password } = registerDto;
+    const emailLowerCase = email.toLowerCase().trim();
 
     const existingUser = await this.prisma.user.findUnique({
-      where: { email },
+      where: { email: emailLowerCase },
     });
 
     if (existingUser) {
@@ -36,7 +37,7 @@ export class AuthService {
     const user = await this.prisma.user.create({
       data: {
         name,
-        email,
+        email: emailLowerCase,
         password: hashedPassword,
       },
     });
@@ -54,7 +55,6 @@ export class AuthService {
 
   async login(loginDto: LoginDto) {
     const { email, password } = loginDto;
-
     const user = await this.prisma.user.findUnique({
       where: { email },
     });

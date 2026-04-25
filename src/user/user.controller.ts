@@ -2,9 +2,11 @@ import { Body, Controller, Get, Patch, Req, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { UserService } from './user.service';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
+@ApiBearerAuth() // ⬅️ WAJIB TAMBAH INI
 @Controller('user')
-@UseGuards(JwtAuthGuard) // apply guard once (cleaner)
+@UseGuards(JwtAuthGuard)
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
